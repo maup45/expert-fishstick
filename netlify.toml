@@ -1,35 +1,28 @@
+# Netlify config for DeepHull Diving static SPA
 [build]
-  command = "npm run build:client"
-  functions = "netlify/functions"
-  publish = "dist/spa"
+  publish = "."
 
-[build.environment]
-  NODE_VERSION = "18"
-
-[functions]
-  external_node_modules = ["express"]
-  node_bundler = "esbuild"
-  
-[[redirects]]
-  force = true
-  from = "/api/*"
-  status = 200
-  to = "/.netlify/functions/api/:splat"
-
-# Form handling
+# SPA routing (React/Vite)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# Success page redirect for forms
+# Success page for forms
 [[redirects]]
   from = "/success"
   to = "/success.html"
   status = 200
 
-# Ensure forms are accessible
+# Caching & security
 [[headers]]
-  for = "/forms.html"
+  for = "/assets/*"
   [headers.values]
-    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
